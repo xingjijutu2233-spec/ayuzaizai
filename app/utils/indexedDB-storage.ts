@@ -22,6 +22,7 @@ class IndexedDBStorage implements StateStorage {
         return;
       }
       await set(name, value);
+      localStorage.setItem(name, value);
     } catch (error) {
       localStorage.setItem(name, value);
     }
