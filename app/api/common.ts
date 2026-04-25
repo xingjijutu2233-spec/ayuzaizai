@@ -27,6 +27,15 @@ export async function requestOpenai(req: NextRequest) {
     authHeaderName = "Authorization";
   }
 
+  // fallback: if no auth value from client, use server API key directly
+  if (!authValue || authValue === "Bearer " || authValue.trim() === "Bearer") {
+    const fallbackKey = isAzure ? serverConfig.azureApiKey : serverConfig.apiKey;
+    if (fallbackKey) {
+      authValue = isAzure ? fallbackKey : `Bearer ${fallbackKey}`;
+      console.log("[Proxy] using server API key as fallback");
+    }
+  }
+
   let path = `${req.nextUrl.pathname}`.replaceAll("/api/openai/", "");
 
   let baseUrl =
