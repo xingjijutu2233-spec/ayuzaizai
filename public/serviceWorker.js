@@ -1,4 +1,4 @@
-const CHATGPT_NEXT_WEB_CACHE = "chatgpt-next-web-cache-v2";
+const CHATGPT_NEXT_WEB_CACHE = "chatgpt-next-web-cache-v3";
 const CHATGPT_NEXT_WEB_FILE_CACHE = "chatgpt-next-web-file";
 let a="useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";let nanoid=(e=21)=>{let t="",r=crypto.getRandomValues(new Uint8Array(e));for(let n=0;n<e;n++)t+=a[63&r[n]];return t};
 
