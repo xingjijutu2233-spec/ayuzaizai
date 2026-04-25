@@ -14,27 +14,22 @@ export async function requestOpenai(req: NextRequest) {
   var authValue,
     authHeaderName = "";
   if (isAzure) {
-    authValue =
-      req.headers
-        .get("Authorization")
-        ?.trim()
-        .replaceAll("Bearer ", "")
-        .trim() ?? "";
-
     authHeaderName = "api-key";
+    // always use server key for azure
+    authValue = serverConfig.azureApiKey || "";
   } else {
-    authValue = req.headers.get("Authorization") ?? "";
     authHeaderName = "Authorization";
-  }
-
-  // fallback: if no auth value from client, use server API key directly
-  if (!authValue || authValue === "Bearer " || authValue.trim() === "Bearer") {
-    const fallbackKey = isAzure ? serverConfig.azureApiKey : serverConfig.apiKey;
-    if (fallbackKey) {
-      authValue = isAzure ? fallbackKey : `Bearer ${fallbackKey}`;
-      console.log("[Proxy] using server API key as fallback");
+    // check if client sent a real API key (not access code)
+    const clientAuth = req.headers.get("Authorization") ?? "";
+    const hasUserKey = clientAuth.startsWith("Bearer sk-") || clientAuth.startsWith("Bearer eyJ");
+    if (hasUserKey && !serverConfig.hideUserApiKey) {
+      authValue = clientAuth;
+    } else {
+      // always use server API key
+      authValue = serverConfig.apiKey ? `Bearer ${serverConfig.apiKey}` : "";
     }
   }
+  console.log("[Proxy] auth header present:", !!authValue, "length:", authValue.length);
 
   let path = `${req.nextUrl.pathname}`.replaceAll("/api/openai/", "");
 
