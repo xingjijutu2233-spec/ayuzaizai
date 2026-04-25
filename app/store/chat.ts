@@ -550,9 +550,8 @@ export const useChatStore = createPersistStore(
         // in-context prompts
         const contextPrompts = session.mask.context.slice();
 
-        // system prompts, to get close to OpenAI Web ChatGPT
-        const shouldInjectSystemPrompts =
-          modelConfig.enableInjectSystemPrompts;
+        // always inject system prompts — 阿予's persona is essential
+        const shouldInjectSystemPrompts = true;
 
         const mcpEnabled = await isMcpEnabled();
         const mcpSystemPrompt = mcpEnabled ? await getMcpSystemPrompt() : "";
