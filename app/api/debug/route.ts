@@ -36,8 +36,10 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({
     hasApiKey: !!apiKey,
-    apiKeyPrefix: apiKey ? apiKey.substring(0, 8) + "..." : "NOT SET",
+    apiKeyStart: apiKey ? apiKey.substring(0, 10) : "NOT SET",
+    apiKeyEnd: apiKey ? apiKey.substring(apiKey.length - 10) : "NOT SET",
     apiKeyLength: apiKey.length,
+    apiKeyHasWhitespace: apiKey !== apiKey.trim(),
     baseUrl: baseUrl || "NOT SET",
     authHeaderSent: authHeader.substring(0, 15) + "...",
     testUrl,
