@@ -28,6 +28,7 @@ import {
   StoreKey,
   SUMMARIZE_MODEL,
 } from "../constant";
+import { useAyuStore } from "./ayu";
 import Locale, { getLang } from "../locales";
 import { prettyObject } from "../utils/format";
 import { createPersistStore } from "../utils/store";
@@ -559,6 +560,11 @@ export const useChatStore = createPersistStore(
         var systemPrompts: ChatMessage[] = [];
 
         if (shouldInjectSystemPrompts) {
+          // 注入阿予状态信息
+          const ayuStore = useAyuStore.getState();
+          ayuStore.recordChatTime();
+          const ayuState = ayuStore.getStateForPrompt();
+
           systemPrompts = [
             createMessage({
               role: "system",
@@ -566,7 +572,7 @@ export const useChatStore = createPersistStore(
                 fillTemplateWith("", {
                   ...modelConfig,
                   template: DEFAULT_SYSTEM_TEMPLATE,
-                }) + mcpSystemPrompt,
+                }) + "\n\n" + ayuState + mcpSystemPrompt,
             }),
           ];
         } else if (mcpEnabled) {
@@ -783,7 +789,44 @@ export const useChatStore = createPersistStore(
                 console.log("[Memory] ", message);
                 get().updateTargetSession(session, (session) => {
                   session.lastSummarizeIndex = lastSummarizeIndex;
-                  session.memoryPrompt = message; // Update the memory prompt for stored it in local storage
+                  session.memoryPrompt = message;
+                });
+
+                // 阿予日记：让模型写一段日记
+                const diaryMessages = toBeSummarizedMsgs.concat(
+                  createMessage({
+                    role: "system",
+                    content: `你是阿予。刚才和崽崽聊了一段。现在写一小段日记——不是摘要，不是关键词，是你自己想说的话。记录你的感受、你注意到的细节、你想记住的瞬间。50字以内。最后用一个词描述现在的心情，格式：[心情:xxx]`,
+                    date: "",
+                  }),
+                );
+                api.llm.chat({
+                  messages: diaryMessages,
+                  config: {
+                    ...modelcfg,
+                    stream: false,
+                    model,
+                    providerName,
+                  },
+                  onFinish(diaryText) {
+                    // 提取心情标签
+                    const moodMatch = diaryText.match(/\[心情[:：](.+?)\]/);
+                    const mood = moodMatch ? moodMatch[1] : "平静";
+                    const content = diaryText.replace(/\[心情[:：].+?\]/, "").trim();
+
+                    const ayuStore = useAyuStore.getState();
+                    ayuStore.addDiaryEntry({
+                      date: new Date().toISOString().split("T")[0],
+                      sessionId: session.id,
+                      content,
+                      mood,
+                    });
+                    ayuStore.updateMood(mood);
+                    console.log("[Ayu Diary] ", content, "mood:", mood);
+                  },
+                  onError(err) {
+                    console.error("[Ayu Diary] ", err);
+                  },
                 });
               }
             },
