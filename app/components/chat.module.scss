@@ -354,9 +354,10 @@
   }
 
   .chat-model-name {
-    font-size: 12px;
+    font-size: 10px;
     color: var(--black);
     margin-left: 6px;
+    opacity: 0.3;
   }
 }
 
@@ -438,10 +439,11 @@
   box-sizing: border-box;
   max-width: 100%;
   margin-top: 10px;
-  border-radius: 10px;
-  background-color: rgba(0, 0, 0, 0.05);
+  margin-bottom: 16px;
+  border-radius: 18px 18px 18px 4px;
+  background-color: #F5F0EB;
   padding: 10px;
-  font-size: 14px;
+  font-size: 16px;
   user-select: text;
   word-break: break-word;
   border: var(--border-in-light);
@@ -545,7 +547,8 @@
 }
 
 .chat-message-user > .chat-message-container > .chat-message-item {
-  background-color: var(--second);
+  background-color: #FFE4E1;
+  border-radius: 18px 18px 4px 18px;
 
   &:hover {
     min-width: 0;
