@@ -64,7 +64,7 @@ export const DEFAULT_CONFIG = {
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
-    model: "claude-opus-4-6" as ModelType,
+    model: "[An2￥0.2/次]claude-opus-4-6" as ModelType,
     providerName: "OpenAI" as ServiceProvider,
     temperature: 0.7,
     top_p: 1,
