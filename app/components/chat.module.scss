@@ -594,14 +594,19 @@
 }
 
 .chat-message-action-btn {
-  font-size: 11px;
-  color: var(--primary);
   cursor: pointer;
-  opacity: 0.6;
+  opacity: 0.35;
   transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
 
   &:hover {
-    opacity: 1;
+    opacity: 0.8;
   }
 }
 
@@ -609,6 +614,38 @@
   background-color: #FFE4E1;
   border-radius: 18px 18px 4px 18px;
   border: none;
+}
+
+.chat-scroll-to-bottom {
+  position: absolute;
+  right: 16px;
+  bottom: 80px;
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--white);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    opacity: 0.5;
+  }
+
+  &:hover {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+
+    svg {
+      opacity: 0.8;
+    }
+  }
 }
 
 .chat-input-panel {

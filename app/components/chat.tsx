@@ -1695,6 +1695,7 @@ function _Chat() {
                                 {isUser && (
                                   <span
                                     className={styles["chat-message-action-btn"]}
+                                    title="编辑"
                                     onClick={async () => {
                                       const newMessage = await showPrompt(
                                         "编辑消息",
@@ -1706,22 +1707,24 @@ function _Chat() {
                                       }
                                     }}
                                   >
-                                    编辑
+                                    <EditIcon />
                                   </span>
                                 )}
                                 {!isUser && (
                                   <span
                                     className={styles["chat-message-action-btn"]}
+                                    title="重新生成"
                                     onClick={() => onRegenerateFrom(message)}
                                   >
-                                    重新生成
+                                    <ReloadIcon />
                                   </span>
                                 )}
                                 <span
                                   className={styles["chat-message-action-btn"]}
+                                  title="删除"
                                   onClick={() => onDelete(message.id)}
                                 >
-                                  删除
+                                  <DeleteIcon />
                                 </span>
                               </div>
                             )}
@@ -1733,6 +1736,14 @@ function _Chat() {
                   );
                 })}
             </div>
+            {!hitBottom && (
+              <div
+                className={styles["chat-scroll-to-bottom"]}
+                onClick={scrollToBottom}
+              >
+                <BottomIcon />
+              </div>
+            )}
             <div className={styles["chat-input-panel"]}>
               {/* Toolbar removed — clean messaging input */}
               <label
