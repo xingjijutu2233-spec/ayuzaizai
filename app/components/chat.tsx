@@ -995,6 +995,57 @@ function _Chat() {
     deleteMessage(msgId);
   };
 
+  // Edit a user message: delete it and everything after, then resend with new content
+  const onEditAndResendFrom = (message: ChatMessage, newContent: string) => {
+    const msgIndex = session.messages.findIndex((m) => m.id === message.id);
+    if (msgIndex < 0) return;
+
+    // Delete this message and everything after it
+    chatStore.updateTargetSession(session, (session) => {
+      session.messages = session.messages.slice(0, msgIndex);
+    });
+
+    // Send the new content (onUserInput creates fresh user + bot messages)
+    setIsLoading(true);
+    chatStore
+      .onUserInput(newContent, getMessageImages(message))
+      .then(() => setIsLoading(false));
+    inputRef.current?.focus();
+  };
+
+  // Regenerate from a bot message: find the user msg before it,
+  // delete from user msg onward, resend
+  const onRegenerateFrom = (message: ChatMessage) => {
+    const msgIndex = session.messages.findIndex((m) => m.id === message.id);
+    if (msgIndex < 0) return;
+
+    // Find the user message before this bot message
+    let userMessage: ChatMessage | undefined;
+    for (let i = msgIndex - 1; i >= 0; i--) {
+      if (session.messages[i].role === "user") {
+        userMessage = session.messages[i];
+        break;
+      }
+    }
+    if (!userMessage) return;
+
+    const userMsgIndex = session.messages.findIndex(
+      (m) => m.id === userMessage!.id,
+    );
+
+    // Delete from user message onward
+    const textContent = getMessageTextContent(userMessage);
+    const images = getMessageImages(userMessage);
+    chatStore.updateTargetSession(session, (session) => {
+      session.messages = session.messages.slice(0, userMsgIndex);
+    });
+
+    // Resend (onUserInput creates fresh user + bot messages)
+    setIsLoading(true);
+    chatStore.onUserInput(textContent, images).then(() => setIsLoading(false));
+    inputRef.current?.focus();
+  };
+
   const onResend = (message: ChatMessage) => {
     // when it is resending a message
     // 1. for a user's message, find the next bot response
@@ -1651,18 +1702,7 @@ function _Chat() {
                                         10,
                                       );
                                       if (newMessage) {
-                                        chatStore.updateTargetSession(
-                                          session,
-                                          (session) => {
-                                            const m = session.messages.find(
-                                              (m) => m.id === message.id,
-                                            );
-                                            if (m) {
-                                              m.content = newMessage;
-                                            }
-                                          },
-                                        );
-                                        onResend(message);
+                                        onEditAndResendFrom(message, newMessage);
                                       }
                                     }}
                                   >
@@ -1672,7 +1712,7 @@ function _Chat() {
                                 {!isUser && (
                                   <span
                                     className={styles["chat-message-action-btn"]}
-                                    onClick={() => onResend(message)}
+                                    onClick={() => onRegenerateFrom(message)}
                                   >
                                     重新生成
                                   </span>
