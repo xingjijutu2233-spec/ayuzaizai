@@ -336,6 +336,24 @@
 .chat-header-right {
   position: absolute;
   right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  border-radius: 50%;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 .chat {

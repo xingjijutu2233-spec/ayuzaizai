@@ -1481,7 +1481,16 @@ function _Chat() {
             </div>
             <div className={styles["chat-header-name"]}>阿予</div>
           </div>
-          <div className={styles["chat-header-right"]} />
+          <div
+            className={styles["chat-header-right"]}
+            onClick={async () => {
+              if (await showConfirm("开始新对话？之前的记录还在侧边栏。")) {
+                chatStore.newSession();
+              }
+            }}
+          >
+            <ReloadIcon />
+          </div>
 
           <PromptToast
             showToast={!hitBottom}
