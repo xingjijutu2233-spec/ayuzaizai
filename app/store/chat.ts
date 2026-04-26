@@ -600,10 +600,11 @@ export const useChatStore = createPersistStore(
           shouldSendLongTermMemory && memoryPrompt ? [memoryPrompt] : [];
         const longTermMemoryStartIndex = session.lastSummarizeIndex;
 
-        // short term memory
+        // short term memory — always use max history (200)
+        const historyCount = Math.max(modelConfig.historyMessageCount, 200);
         const shortTermMemoryStartIndex = Math.max(
           0,
-          totalMessageCount - modelConfig.historyMessageCount,
+          totalMessageCount - historyCount,
         );
 
         // lets concat send messages, including 4 parts:
@@ -636,7 +637,7 @@ export const useChatStore = createPersistStore(
           ...reversedRecentMessages.reverse(),
         ];
 
-        const debugMsg = `发送${reversedRecentMessages.length}条(共${totalMessageCount}) 设置${modelConfig.historyMessageCount} 起点${contextStartIndex} 清除点${clearContextIndex} 摘要点${session.lastSummarizeIndex}`;
+        const debugMsg = `发送${reversedRecentMessages.length}条(共${totalMessageCount}) 实际${historyCount}`;
         console.log(`[Chat Memory] ${debugMsg}`);
         showToast(debugMsg);
 
