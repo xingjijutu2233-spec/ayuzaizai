@@ -637,9 +637,9 @@ export const useChatStore = createPersistStore(
           ...reversedRecentMessages.reverse(),
         ];
 
-        const debugMsg = `发送${reversedRecentMessages.length}条(共${totalMessageCount}) 实际${historyCount}`;
-        console.log(`[Chat Memory] ${debugMsg}`);
-        showToast(debugMsg);
+        console.log(
+          `[Chat Memory] sending:${reversedRecentMessages.length} total:${totalMessageCount} historyCount:${historyCount}`,
+        );
 
         return recentMessages;
       },
