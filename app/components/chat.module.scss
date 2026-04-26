@@ -559,24 +559,50 @@
   }
 }
 
-.chat-message-action-date {
-  font-size: 11px;
+.chat-message-actions-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   opacity: 0;
-  white-space: nowrap;
   transition: opacity ease 0.3s;
-  color: var(--black);
-  text-align: right;
-  width: 100%;
-  box-sizing: border-box;
-  padding-right: 4px;
-  padding-top: 2px;
-  pointer-events: none;
-  z-index: 1;
+  padding: 2px 4px 0;
 }
 
-.chat-message:hover .chat-message-action-date,
-.chat-message-user:hover .chat-message-action-date {
-  opacity: 0.4;
+.chat-message:hover .chat-message-actions-bar,
+.chat-message-user:hover .chat-message-actions-bar {
+  opacity: 1;
+}
+
+// On mobile, always show actions on the last message
+@media only screen and (max-width: 600px) {
+  .chat-message:last-child .chat-message-actions-bar,
+  .chat-message-user:last-child .chat-message-actions-bar {
+    opacity: 1;
+  }
+}
+
+.chat-message-action-date {
+  font-size: 11px;
+  white-space: nowrap;
+  color: var(--black);
+  opacity: 0.35;
+}
+
+.chat-message-action-btns {
+  display: flex;
+  gap: 12px;
+}
+
+.chat-message-action-btn {
+  font-size: 11px;
+  color: var(--primary);
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
 }
 
 .chat-message-user > .chat-message-container > .chat-message-item {

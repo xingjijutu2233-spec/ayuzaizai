@@ -1633,10 +1633,58 @@ function _Chat() {
                             </div>
                           )}
 
-                          <div className={styles["chat-message-action-date"]}>
-                            {isContext
-                              ? Locale.Chat.IsContext
-                              : message.date.toLocaleString()}
+                          <div className={styles["chat-message-actions-bar"]}>
+                            <div className={styles["chat-message-action-date"]}>
+                              {isContext
+                                ? Locale.Chat.IsContext
+                                : message.date.toLocaleString()}
+                            </div>
+                            {!isContext && !message.streaming && (
+                              <div className={styles["chat-message-action-btns"]}>
+                                {isUser && (
+                                  <span
+                                    className={styles["chat-message-action-btn"]}
+                                    onClick={async () => {
+                                      const newMessage = await showPrompt(
+                                        "编辑消息",
+                                        getMessageTextContent(message),
+                                        10,
+                                      );
+                                      if (newMessage) {
+                                        chatStore.updateTargetSession(
+                                          session,
+                                          (session) => {
+                                            const m = session.messages.find(
+                                              (m) => m.id === message.id,
+                                            );
+                                            if (m) {
+                                              m.content = newMessage;
+                                            }
+                                          },
+                                        );
+                                        onResend(message);
+                                      }
+                                    }}
+                                  >
+                                    编辑
+                                  </span>
+                                )}
+                                {!isUser && (
+                                  <span
+                                    className={styles["chat-message-action-btn"]}
+                                    onClick={() => onResend(message)}
+                                  >
+                                    重新生成
+                                  </span>
+                                )}
+                                <span
+                                  className={styles["chat-message-action-btn"]}
+                                  onClick={() => onDelete(message.id)}
+                                >
+                                  删除
+                                </span>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>
