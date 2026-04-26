@@ -636,9 +636,11 @@ export const useChatStore = createPersistStore(
           ...reversedRecentMessages.reverse(),
         ];
 
+        const debugMsg = `记忆: ${reversedRecentMessages.length}条消息已发送 (共${totalMessageCount}条)`;
         console.log(
           `[Chat Memory] total:${totalMessageCount} historyCount:${modelConfig.historyMessageCount} contextStart:${contextStartIndex} sending:${recentMessages.length} (system:${systemPrompts.length} memory:${longTermMemoryPrompts.length} context:${contextPrompts.length} recent:${reversedRecentMessages.length})`,
         );
+        showToast(debugMsg);
 
         return recentMessages;
       },
