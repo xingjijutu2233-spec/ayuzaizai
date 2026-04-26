@@ -600,8 +600,8 @@ export const useChatStore = createPersistStore(
           shouldSendLongTermMemory && memoryPrompt ? [memoryPrompt] : [];
         const longTermMemoryStartIndex = session.lastSummarizeIndex;
 
-        // short term memory — always use max history (100)
-        const historyCount = Math.max(modelConfig.historyMessageCount, 100);
+        // short term memory — use session setting directly, no forced minimum
+        const historyCount = modelConfig.historyMessageCount;
         const shortTermMemoryStartIndex = Math.max(
           0,
           totalMessageCount - historyCount,
