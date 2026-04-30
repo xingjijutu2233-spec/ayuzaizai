@@ -467,7 +467,7 @@
   margin-top: 4px;
   margin-bottom: 2px;
   border-radius: 18px 18px 18px 4px;
-  background-color: #F5F0EB;
+  background-color: #EDE5DB;
   padding: 10px 14px;
   font-size: 15px;
   line-height: 1.5;
@@ -611,7 +611,7 @@
 }
 
 .chat-message-user > .chat-message-container > .chat-message-item {
-  background-color: #FFE4E1;
+  background-color: #F8CFC8;
   border-radius: 18px 18px 4px 18px;
   border: none;
 }
@@ -750,6 +750,29 @@
 }
 
 .chat-input:focus {
+}
+
+.chat-input-image {
+  position: absolute;
+  right: 58px;
+  bottom: 16px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    opacity: 0.7;
+  }
 }
 
 .chat-input-send {

@@ -1794,6 +1794,12 @@ function _Chat() {
                     })}
                   </div>
                 )}
+                <div
+                  className={styles["chat-input-image"]}
+                  onClick={uploadImage}
+                >
+                  <ImageIcon />
+                </div>
                 <IconButton
                   icon={<SendWhiteIcon />}
                   text={Locale.Chat.Send}
