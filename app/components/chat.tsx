@@ -1721,6 +1721,13 @@ function _Chat() {
                                 )}
                                 <span
                                   className={styles["chat-message-action-btn"]}
+                                  title="复制"
+                                  onClick={() => copyToClipboard(getMessageTextContent(message))}
+                                >
+                                  <CopyIcon />
+                                </span>
+                                <span
+                                  className={styles["chat-message-action-btn"]}
                                   title="删除"
                                   onClick={() => onDelete(message.id)}
                                 >
@@ -1745,61 +1752,59 @@ function _Chat() {
               </div>
             )}
             <div className={styles["chat-input-panel"]}>
-              {/* Toolbar removed — clean messaging input */}
-              <label
-                className={clsx(styles["chat-input-panel-inner"], {
-                  [styles["chat-input-panel-inner-attach"]]:
-                    attachImages.length !== 0,
-                })}
-                htmlFor="chat-input"
-              >
-                <textarea
-                  id="chat-input"
-                  ref={inputRef}
-                  className={styles["chat-input"]}
-                  placeholder={Locale.Chat.Input(submitKey)}
-                  onInput={(e) => onInput(e.currentTarget.value)}
-                  value={userInput}
-                  onKeyDown={onInputKeyDown}
-                  onFocus={scrollToBottom}
-                  onClick={scrollToBottom}
-                  onPaste={handlePaste}
-                  rows={inputRows}
-                  autoFocus={autoFocus}
-                  style={{
-                    fontSize: config.fontSize,
-                    fontFamily: config.fontFamily,
-                  }}
-                />
-                {attachImages.length != 0 && (
-                  <div className={styles["attach-images"]}>
-                    {attachImages.map((image, index) => {
-                      return (
-                        <div
-                          key={index}
-                          className={styles["attach-image"]}
-                          style={{ backgroundImage: `url("${image}")` }}
-                        >
-                          <div className={styles["attach-image-mask"]}>
-                            <DeleteImageButton
-                              deleteImage={() => {
-                                setAttachImages(
-                                  attachImages.filter((_, i) => i !== index),
-                                );
-                              }}
-                            />
-                          </div>
+              {attachImages.length != 0 && (
+                <div className={styles["attach-images"]}>
+                  {attachImages.map((image, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className={styles["attach-image"]}
+                        style={{ backgroundImage: `url("${image}")` }}
+                      >
+                        <div className={styles["attach-image-mask"]}>
+                          <DeleteImageButton
+                            deleteImage={() => {
+                              setAttachImages(
+                                attachImages.filter((_, i) => i !== index),
+                              );
+                            }}
+                          />
                         </div>
-                      );
-                    })}
-                  </div>
-                )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              <div className={styles["chat-input-row"]}>
                 <div
                   className={styles["chat-input-image"]}
                   onClick={uploadImage}
                 >
                   <ImageIcon />
                 </div>
+                <label
+                  className={styles["chat-input-panel-inner"]}
+                  htmlFor="chat-input"
+                >
+                  <textarea
+                    id="chat-input"
+                    ref={inputRef}
+                    className={styles["chat-input"]}
+                    placeholder={Locale.Chat.Input(submitKey)}
+                    onInput={(e) => onInput(e.currentTarget.value)}
+                    value={userInput}
+                    onKeyDown={onInputKeyDown}
+                    onFocus={scrollToBottom}
+                    onClick={scrollToBottom}
+                    onPaste={handlePaste}
+                    rows={1}
+                    autoFocus={autoFocus}
+                    style={{
+                      fontSize: config.fontSize,
+                      fontFamily: config.fontFamily,
+                    }}
+                  />
+                </label>
                 <IconButton
                   icon={<SendWhiteIcon />}
                   text={Locale.Chat.Send}
@@ -1807,7 +1812,7 @@ function _Chat() {
                   type="primary"
                   onClick={() => doSubmit(userInput)}
                 />
-              </label>
+              </div>
             </div>
           </div>
           <div

@@ -371,7 +371,7 @@
   padding-bottom: 20px;
   position: relative;
   overscroll-behavior: none;
-  background-color: #FAFAF8;
+  background-color: #E8DFCE;
 }
 
 .chat-body-main-title {
@@ -467,7 +467,7 @@
   margin-top: 4px;
   margin-bottom: 2px;
   border-radius: 18px 18px 18px 4px;
-  background-color: #EDE5DB;
+  background-color: #FFFFFF;
   padding: 10px 14px;
   font-size: 15px;
   line-height: 1.5;
@@ -611,7 +611,7 @@
 }
 
 .chat-message-user > .chat-message-container > .chat-message-item {
-  background-color: #F8CFC8;
+  background-color: #EEFFDE;
   border-radius: 18px 18px 4px 18px;
   border: none;
 }
@@ -713,6 +713,12 @@
   }
 }
 
+.chat-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
 .chat-input-panel-inner {
   cursor: text;
   display: flex;
@@ -720,10 +726,6 @@
   border-radius: 20px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   background-color: #f7f7f7;
-}
-
-.chat-input-panel-inner-attach {
-  padding-bottom: 80px;
 }
 
 .chat-input-panel-inner:has(.chat-input:focus) {
@@ -739,11 +741,11 @@
   background-color: transparent;
   color: var(--black);
   font-family: inherit;
-  padding: 10px 50px 10px 16px;
+  padding: 8px 14px;
   resize: none;
   outline: none;
   box-sizing: border-box;
-  min-height: 44px;
+  min-height: 36px;
   max-height: 120px;
   font-size: 15px;
   line-height: 1.4;
@@ -753,11 +755,9 @@
 }
 
 .chat-input-image {
-  position: absolute;
-  right: 58px;
-  bottom: 16px;
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -766,8 +766,8 @@
   transition: opacity 0.2s;
 
   svg {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
   }
 
   &:hover {
@@ -779,27 +779,19 @@
   background-color: var(--primary);
   color: white;
   border-radius: 50% !important;
-  width: 34px;
-  height: 34px;
-  min-width: 34px;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  flex-shrink: 0;
   padding: 0 !important;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  position: absolute;
-  right: 18px;
-  bottom: 14px;
 }
 
 @media only screen and (max-width: 600px) {
   .chat-input {
     font-size: 16px;
-  }
-
-  .chat-input-send {
-    bottom: 14px;
-    right: 16px;
   }
 }
 

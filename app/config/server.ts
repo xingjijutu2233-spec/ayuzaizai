@@ -137,8 +137,8 @@ export const getServerSideConfig = () => {
   }
 
   const disableGPT4 = !!process.env.DISABLE_GPT4;
-  let customModels = process.env.CUSTOM_MODELS ?? "";
-  let defaultModel = process.env.DEFAULT_MODEL ?? "";
+  let customModels = process.env.CUSTOM_MODELS || "-all,[An￥0.1/次]claude-opus-4-6-thinking-200k,[An￥0.12/次]claude-opus-4-6-thinking,[Or逆￥0.2/次]claude-opus-4-6-thinking,[An￥0.12/次]claude-opus-4-6,[An2￥0.2/次]claude-opus-4-6,[Or逆￥0.2/次]claude-opus-4-6";
+  let defaultModel = process.env.DEFAULT_MODEL || "[Or逆￥0.2/次]claude-opus-4-6-thinking";
   let visionModels = process.env.VISION_MODELS ?? "";
 
   if (disableGPT4) {

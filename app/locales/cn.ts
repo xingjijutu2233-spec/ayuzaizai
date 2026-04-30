@@ -84,14 +84,10 @@ const cn = {
     },
     Rename: "重命名对话",
     Typing: "正在输入…",
-    Input: (submitKey: string) => {
-      var inputHints = `${submitKey} 发送`;
-      if (submitKey === String(SubmitKey.Enter)) {
-        inputHints += "，Shift + Enter 换行";
-      }
-      return inputHints + "，/ 触发补全，: 触发命令";
+    Input: (_submitKey: string) => {
+      return "说点什么...";
     },
-    Send: "发送",
+    Send: "",
     StartSpeak: "说话",
     StopSpeak: "停止",
     Config: {
