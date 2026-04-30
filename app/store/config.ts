@@ -60,11 +60,11 @@ export const DEFAULT_CONFIG = {
   dontShowMaskSplashScreen: false, // dont show splash screen when create chat
   hideBuiltinMasks: false, // dont add builtin masks
 
-  customModels: "",
+  customModels: "-all,[An￥0.1/次]claude-opus-4-6-thinking-200k,[An￥0.12/次]claude-opus-4-6-thinking,[Or逆￥0.2/次]claude-opus-4-6-thinking,[An￥0.12/次]claude-opus-4-6,[An2￥0.2/次]claude-opus-4-6,[Or逆￥0.2/次]claude-opus-4-6",
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
-    model: "[An2￥0.2/次]claude-opus-4-6" as ModelType,
+    model: "[Or逆￥0.2/次]claude-opus-4-6-thinking" as ModelType,
     providerName: "OpenAI" as ServiceProvider,
     temperature: 0.7,
     top_p: 1,
