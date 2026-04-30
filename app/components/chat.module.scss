@@ -333,11 +333,17 @@
   color: var(--black);
 }
 
-.chat-header-right {
+.chat-header-actions {
   position: absolute;
-  right: 12px;
+  right: 8px;
   top: 50%;
   transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.chat-header-action {
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -371,7 +377,7 @@
   padding-bottom: 20px;
   position: relative;
   overscroll-behavior: none;
-  background-color: #EEF2E9;
+  background-color: #F5F5F0;
 }
 
 .chat-body-main-title {

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import styles from "./home.module.scss";
 
 import BotIcon from "../icons/bot.svg";
+import CrabIcon from "../icons/crab.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 
 import { getCSSVar, useMobileScreen } from "../utils";
@@ -34,11 +35,7 @@ import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
 export function Loading(props: { noLogo?: boolean }) {
   return (
     <div className={clsx("no-dark", styles["loading-content"])}>
-      {!props.noLogo && (
-        <pre style={{ fontSize: 14, lineHeight: 1.1, color: "#D97706", userSelect: "none", textAlign: "center", margin: 0 }}>
-{`▗ ▗   ▖ ▖\n ▘▘ ▝▝`}
-        </pre>
-      )}
+      {!props.noLogo && <CrabIcon style={{ width: 48, height: 36 }} />}
       <LoadingIcon />
     </div>
   );

@@ -992,7 +992,7 @@ function _Chat() {
   };
 
   const onDelete = async (msgId: string) => {
-    if (await showConfirm("确定要删掉这条消息吗？删了就没了哦~")) {
+    if (await showConfirm("崽崽，确认要删掉吗？")) {
       deleteMessage(msgId);
     }
   };
@@ -1512,6 +1512,7 @@ function _Chat() {
   }, [messages, chatStore, navigate, session]);
 
   const [showChatSidePanel, setShowChatSidePanel] = useState(false);
+  const [showSessionConfig, setShowSessionConfig] = useState(false);
 
   return (
     <>
@@ -1534,15 +1535,23 @@ function _Chat() {
             </div>
             <div className={styles["chat-header-name"]}>阿予</div>
           </div>
-          <div
-            className={styles["chat-header-right"]}
-            onClick={async () => {
-              if (await showConfirm("开始新对话？之前的记录还在侧边栏。")) {
-                chatStore.newSession();
-              }
-            }}
-          >
-            <ReloadIcon />
+          <div className={styles["chat-header-actions"]}>
+            <div
+              className={styles["chat-header-action"]}
+              onClick={() => setShowSessionConfig(true)}
+            >
+              <SettingsIcon />
+            </div>
+            <div
+              className={styles["chat-header-action"]}
+              onClick={async () => {
+                if (await showConfirm("开始新对话？之前的记录还在侧边栏。")) {
+                  chatStore.newSession();
+                }
+              }}
+            >
+              <ReloadIcon />
+            </div>
           </div>
 
           <PromptToast
@@ -1551,6 +1560,9 @@ function _Chat() {
             setShowModal={setShowPromptModal}
           />
         </div>
+        {showSessionConfig && (
+          <SessionConfigModel onClose={() => setShowSessionConfig(false)} />
+        )}
         <div className={styles["chat-main"]}>
           <div className={styles["chat-body-container"]}>
             <div
