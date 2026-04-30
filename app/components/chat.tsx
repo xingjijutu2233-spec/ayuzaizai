@@ -991,8 +991,10 @@ function _Chat() {
     );
   };
 
-  const onDelete = (msgId: string) => {
-    deleteMessage(msgId);
+  const onDelete = async (msgId: string) => {
+    if (await showConfirm("确定要删掉这条消息吗？删了就没了哦~")) {
+      deleteMessage(msgId);
+    }
   };
 
   // Edit a user message: delete it and everything after, then resend with new content

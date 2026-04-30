@@ -34,7 +34,11 @@ import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
 export function Loading(props: { noLogo?: boolean }) {
   return (
     <div className={clsx("no-dark", styles["loading-content"])}>
-      {!props.noLogo && <span style={{ fontSize: 32, fontFamily: "monospace", color: "#D97706", userSelect: "none" }}>{">ᴗ<"}</span>}
+      {!props.noLogo && (
+        <pre style={{ fontSize: 14, lineHeight: 1.1, color: "#D97706", userSelect: "none", textAlign: "center", margin: 0 }}>
+{`▗ ▗   ▖ ▖\n ▘▘ ▝▝`}
+        </pre>
+      )}
       <LoadingIcon />
     </div>
   );
