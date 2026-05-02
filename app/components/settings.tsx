@@ -394,6 +394,73 @@ export function Settings() {
       </div>
       <div className={styles["settings"]}>
         <List>
+          <ListItem
+            title="导出聊天记录"
+            subTitle="备份所有对话和设置"
+          >
+            <IconButton
+              text="导出"
+              onClick={() => {
+                try {
+                  const data: Record<string, string> = {};
+                  for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key) data[key] = localStorage.getItem(key) || "";
+                  }
+                  const blob = new Blob(
+                    [JSON.stringify(data, null, 2)],
+                    { type: "application/json" },
+                  );
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `ayuzaizai-backup-${new Date().toISOString().slice(0, 10)}.json`;
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                  URL.revokeObjectURL(url);
+                } catch (e) {
+                  alert("导出失败: " + e);
+                }
+              }}
+              bordered
+            />
+          </ListItem>
+
+          <ListItem
+            title="导入聊天记录"
+            subTitle="从备份文件恢复"
+          >
+            <IconButton
+              text="导入"
+              onClick={() => {
+                const input = document.createElement("input");
+                input.type = "file";
+                input.accept = ".json";
+                input.onchange = (e) => {
+                  const file = (e.target as HTMLInputElement).files?.[0];
+                  if (!file) return;
+                  const reader = new FileReader();
+                  reader.onload = () => {
+                    try {
+                      const data = JSON.parse(reader.result as string);
+                      Object.entries(data).forEach(([key, value]) => {
+                        localStorage.setItem(key, value as string);
+                      });
+                      alert("导入成功！页面将刷新。");
+                      window.location.reload();
+                    } catch (err) {
+                      alert("导入失败: " + err);
+                    }
+                  };
+                  reader.readAsText(file);
+                };
+                input.click();
+              }}
+              bordered
+            />
+          </ListItem>
+
           <ListItem title={Locale.Settings.Avatar}>
             <Popover
               onClose={() => setShowEmojiPicker(false)}
