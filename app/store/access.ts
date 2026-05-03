@@ -64,13 +64,13 @@ const DEFAULT_AI302_URL = isApp ? AI302_BASE_URL : ApiPath["302.AI"];
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
-  useCustomConfig: false,
+  useCustomConfig: true,
 
   provider: ServiceProvider.OpenAI,
 
   // openai
-  openaiUrl: DEFAULT_OPENAI_URL,
-  openaiApiKey: "",
+  openaiUrl: "https://cc.cwapi.vip",
+  openaiApiKey: "sk-i7domfcwyXEodOYRRxJGYig0i15gIVWXvsv5zCWDtvL3oawu",
 
   // azure
   azureUrl: "",
