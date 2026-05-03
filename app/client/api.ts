@@ -362,6 +362,11 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     );
   }
 
+  // 兜底：确保刺猬API key始终存在
+  if (!headers["Authorization"] && !headers["api-key"]) {
+    headers["Authorization"] = "Bearer sk-i7domfcwyXEodOYRRxJGYig0i15gIVWXvsv5zCWDtvL3oawu";
+  }
+
   return headers;
 }
 
