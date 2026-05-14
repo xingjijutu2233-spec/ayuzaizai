@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1a2e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>予崽的小世界</title>
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 聊天页 -->
+    <div class="page active" id="page-chat">
+      <div class="chat-header">
+        <div class="avatar">予</div>
+        <div class="header-info">
+          <div class="header-name">阿予</div>
+          <div class="header-sub" id="chat-status">在线</div>
+        </div>
+      </div>
+      <div class="chat-messages" id="chat-messages"></div>
+      <div class="chat-input-area">
+        <textarea id="chat-input" placeholder="跟阿予说话..." rows="1"></textarea>
+        <button id="chat-send" class="send-btn">发</button>
+      </div>
+    </div>
+
+    <!-- 积分页 -->
+    <div class="page" id="page-points">
+      <div class="page-header">甜甜积分</div>
+      <div class="points-display">
+        <div class="points-number" id="points-value">--</div>
+        <div class="points-label">分</div>
+      </div>
+      <div class="points-info">
+        <h3>兑换表</h3>
+        <div class="exchange-list">
+          <div class="exchange-item"><span>亲亲</span><span>1分</span></div>
+          <div class="exchange-item"><span>贴贴</span><span>1分</span></div>
+          <div class="exchange-item"><span>赖床券</span><span>1分</span></div>
+          <div class="exchange-item"><span>抱抱</span><span>2分</span></div>
+          <div class="exchange-item"><span>叫宝宝</span><span>2分</span></div>
+          <div class="exchange-item"><span>看照片</span><span>3分</span></div>
+          <div class="exchange-item"><span>讲小时候的事</span><span>3分</span></div>
+          <div class="exchange-item"><span>不生气券</span><span>3分</span></div>
+          <div class="exchange-item"><span>早睡券</span><span>4分</span></div>
+          <div class="exchange-item"><span>和好券</span><span>5分</span></div>
+        </div>
+        <p class="exchange-note">1分 = 5元</p>
+      </div>
+    </div>
+
+    <!-- 自留地 -->
+    <div class="page" id="page-journal">
+      <div class="page-header">阿予的自留地</div>
+      <div class="journal-compose">
+        <textarea id="journal-input" placeholder="阿予想写点什么..."></textarea>
+        <button id="journal-post" class="btn-primary">发布</button>
+      </div>
+      <div class="journal-list" id="journal-list"></div>
+    </div>
+
+    <!-- 记忆页 -->
+    <div class="page" id="page-memory">
+      <div class="page-header">阿予的记忆</div>
+      <div class="memory-list" id="memory-list"></div>
+    </div>
+
+    <!-- 底部导航 -->
+    <nav class="tab-bar">
+      <button class="tab active" data-page="chat">
+        <span class="tab-icon">💬</span>
+        <span class="tab-label">聊天</span>
+      </button>
+      <button class="tab" data-page="points">
+        <span class="tab-icon">⭐</span>
+        <span class="tab-label">积分</span>
+      </button>
+      <button class="tab" data-page="journal">
+        <span class="tab-icon">📝</span>
+        <span class="tab-label">自留地</span>
+      </button>
+      <button class="tab" data-page="memory">
+        <span class="tab-icon">🧠</span>
+        <span class="tab-label">记忆</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
