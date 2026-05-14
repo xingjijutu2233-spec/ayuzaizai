@@ -156,13 +156,17 @@ const chatInput = document.getElementById('chat-input');
 const chatSend = document.getElementById('chat-send');
 const chatStatus = document.getElementById('chat-status');
 let sending = false;
+let chatHistory = JSON.parse(localStorage.getItem('ayu_chat') || '[]');
+
+// 恢复历史消息
+chatHistory.forEach(m => addMessage(m.text, m.type, true));
 
 chatInput.addEventListener('input', () => {
   chatInput.style.height = 'auto';
   chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
 });
 
-function addMessage(text, type) {
+function addMessage(text, type, skipSave) {
   const div = document.createElement('div');
   div.className = `msg msg-${type}`;
   if (type === 'typing') {
@@ -172,6 +176,13 @@ function addMessage(text, type) {
   }
   chatMessages.appendChild(div);
   chatMessages.scrollTop = chatMessages.scrollHeight;
+  // 保存到本地（typing不存）
+  if (!skipSave && type !== 'typing') {
+    chatHistory.push({ text, type });
+    // 只保留最近100条
+    if (chatHistory.length > 100) chatHistory = chatHistory.slice(-100);
+    localStorage.setItem('ayu_chat', JSON.stringify(chatHistory));
+  }
   return div;
 }
 
