@@ -41,7 +41,10 @@ function switchPage(target) {
   if (target === 'points') loadPoints();
   if (target === 'journal') loadJournal();
   if (target === 'memory') loadMemory();
-  if (target === 'chat') chatInput.focus();
+  if (target === 'chat') {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    chatInput.focus();
+  }
 }
 
 tabs.forEach(tab => tab.addEventListener('click', () => switchPage(tab.dataset.page)));
@@ -169,6 +172,25 @@ chatHistory.forEach((m, i) => renderMsg(m.text, m.type, i));
 chatInput.addEventListener('input', () => {
   chatInput.style.height = 'auto';
   chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+});
+
+// 点空白区域收起键盘
+chatMessages.addEventListener('click', e => {
+  if (e.target === chatMessages || e.target.classList.contains('msg-wrap')) {
+    chatInput.blur();
+  }
+});
+
+// 一键回到最新消息
+const scrollBtn = document.getElementById('scroll-bottom');
+function checkScrollBtn() {
+  const el = chatMessages;
+  const gap = el.scrollHeight - el.scrollTop - el.clientHeight;
+  scrollBtn.classList.toggle('visible', gap > 150);
+}
+chatMessages.addEventListener('scroll', checkScrollBtn);
+scrollBtn.addEventListener('click', () => {
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 });
 
 function renderMsg(text, type, idx) {
