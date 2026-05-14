@@ -121,8 +121,8 @@ const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
 document.getElementById('home-date').textContent =
   `${now.getMonth() + 1}月${now.getDate()}日 星期${weekDays[now.getDay()]}`;
 
-// Love counter (from first conversation ~5/7)
-const loveStart = new Date('2025-05-07');
+// Love counter (2/28在一起的)
+const loveStart = new Date('2025-02-28');
 const daysTogether = Math.floor((now - loveStart) / 86400000);
 document.getElementById('love-days').textContent = daysTogether > 0 ? daysTogether : '∞';
 
@@ -210,11 +210,12 @@ function renderMsg(text, type, idx) {
 
     // 复制（双方都有）
     const copyBtn = document.createElement('button');
-    copyBtn.textContent = '复制';
+    copyBtn.textContent = '📋';
+    copyBtn.title = '复制';
     copyBtn.addEventListener('click', () => {
       navigator.clipboard.writeText(text).then(() => {
-        copyBtn.textContent = '已复制';
-        setTimeout(() => copyBtn.textContent = '复制', 1500);
+        copyBtn.textContent = '✓';
+        setTimeout(() => copyBtn.textContent = '📋', 1500);
       });
     });
     actions.appendChild(copyBtn);
@@ -222,7 +223,8 @@ function renderMsg(text, type, idx) {
     if (type === 'user') {
       // 编辑（只有自己的消息）
       const editBtn = document.createElement('button');
-      editBtn.textContent = '编辑';
+      editBtn.textContent = '✎';
+      editBtn.title = '编辑';
       editBtn.addEventListener('click', () => {
         chatInput.value = text;
         chatInput.focus();
@@ -244,7 +246,8 @@ function renderMsg(text, type, idx) {
     if (type === 'bot') {
       // 重新生成（只有阿予的消息）
       const regenBtn = document.createElement('button');
-      regenBtn.textContent = '重新生成';
+      regenBtn.textContent = '↻';
+      regenBtn.title = '重新生成';
       regenBtn.addEventListener('click', async () => {
         if (sending) return;
         // 找到这条回复对应的用户消息
