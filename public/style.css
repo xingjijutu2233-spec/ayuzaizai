@@ -150,6 +150,31 @@ html, body {
   border-radius: 18px 18px 18px 4px;
   box-shadow: 0 1px 4px var(--shadow);
 }
+/* Message wraps */
+.msg-wrap { display: flex; flex-direction: column; }
+.msg-wrap-user { align-items: flex-end; }
+.msg-wrap-bot { align-items: flex-start; }
+.msg-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+  padding: 0 4px;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.msg-wrap:active .msg-actions,
+.msg-wrap:hover .msg-actions { opacity: 1; }
+.msg-actions button {
+  background: none;
+  border: none;
+  font-size: 11px;
+  color: var(--text3);
+  font-family: inherit;
+  cursor: pointer;
+  padding: 2px 0;
+}
+.msg-actions button:active { color: var(--mint-deep); }
+
 .msg-typing .dots span {
   display: inline-block;
   width: 6px; height: 6px;

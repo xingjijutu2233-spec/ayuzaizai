@@ -158,44 +158,118 @@ const chatStatus = document.getElementById('chat-status');
 let sending = false;
 let chatHistory = JSON.parse(localStorage.getItem('ayu_chat') || '[]');
 
+function saveChat() {
+  if (chatHistory.length > 100) chatHistory = chatHistory.slice(-100);
+  localStorage.setItem('ayu_chat', JSON.stringify(chatHistory));
+}
+
 // 恢复历史消息
-chatHistory.forEach(m => addMessage(m.text, m.type, true));
+chatHistory.forEach((m, i) => renderMsg(m.text, m.type, i));
 
 chatInput.addEventListener('input', () => {
   chatInput.style.height = 'auto';
   chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
 });
 
-function addMessage(text, type, skipSave) {
-  const div = document.createElement('div');
-  div.className = `msg msg-${type}`;
-  if (type === 'typing') {
-    div.innerHTML = '<div class="dots"><span></span><span></span><span></span></div>';
-  } else {
-    div.textContent = text;
+function renderMsg(text, type, idx) {
+  const wrap = document.createElement('div');
+  wrap.className = `msg-wrap msg-wrap-${type}`;
+  wrap.dataset.idx = idx;
+
+  const bubble = document.createElement('div');
+  bubble.className = `msg msg-${type}`;
+  bubble.textContent = text;
+  wrap.appendChild(bubble);
+
+  // 操作按钮
+  if (type !== 'typing') {
+    const actions = document.createElement('div');
+    actions.className = 'msg-actions';
+
+    // 复制（双方都有）
+    const copyBtn = document.createElement('button');
+    copyBtn.textContent = '复制';
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.textContent = '已复制';
+        setTimeout(() => copyBtn.textContent = '复制', 1500);
+      });
+    });
+    actions.appendChild(copyBtn);
+
+    if (type === 'user') {
+      // 编辑（只有自己的消息）
+      const editBtn = document.createElement('button');
+      editBtn.textContent = '编辑';
+      editBtn.addEventListener('click', () => {
+        chatInput.value = text;
+        chatInput.focus();
+        chatInput.style.height = 'auto';
+        chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+        // 删掉这条和之后的所有消息
+        const startIdx = parseInt(wrap.dataset.idx);
+        chatHistory = chatHistory.slice(0, startIdx);
+        saveChat();
+        // 从DOM移除这条及之后的
+        const allWraps = chatMessages.querySelectorAll('.msg-wrap');
+        allWraps.forEach(w => {
+          if (parseInt(w.dataset.idx) >= startIdx) w.remove();
+        });
+      });
+      actions.appendChild(editBtn);
+    }
+
+    if (type === 'bot') {
+      // 重新生成（只有阿予的消息）
+      const regenBtn = document.createElement('button');
+      regenBtn.textContent = '重新生成';
+      regenBtn.addEventListener('click', async () => {
+        if (sending) return;
+        // 找到这条回复对应的用户消息
+        const botIdx = parseInt(wrap.dataset.idx);
+        const userMsg = chatHistory[botIdx - 1];
+        if (!userMsg || userMsg.type !== 'user') return;
+        // 删掉这条bot回复
+        chatHistory = chatHistory.slice(0, botIdx);
+        saveChat();
+        wrap.remove();
+        // 重新发
+        await doSend(userMsg.text, true);
+      });
+      actions.appendChild(regenBtn);
+    }
+
+    wrap.appendChild(actions);
   }
-  chatMessages.appendChild(div);
+
+  chatMessages.appendChild(wrap);
   chatMessages.scrollTop = chatMessages.scrollHeight;
-  // 保存到本地（typing不存）
-  if (!skipSave && type !== 'typing') {
-    chatHistory.push({ text, type });
-    // 只保留最近100条
-    if (chatHistory.length > 100) chatHistory = chatHistory.slice(-100);
-    localStorage.setItem('ayu_chat', JSON.stringify(chatHistory));
-  }
-  return div;
+  return wrap;
 }
 
-async function sendMessage() {
-  const text = chatInput.value.trim();
-  if (!text || sending) return;
+function addMessage(text, type) {
+  if (type === 'typing') {
+    const wrap = document.createElement('div');
+    wrap.className = 'msg-wrap msg-wrap-bot';
+    const bubble = document.createElement('div');
+    bubble.className = 'msg msg-typing';
+    bubble.innerHTML = '<div class="dots"><span></span><span></span><span></span></div>';
+    wrap.appendChild(bubble);
+    chatMessages.appendChild(wrap);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return wrap;
+  }
+  const idx = chatHistory.length;
+  chatHistory.push({ text, type });
+  saveChat();
+  return renderMsg(text, type, idx);
+}
 
+async function doSend(text, isRegen) {
   sending = true;
   chatSend.disabled = true;
-  chatInput.value = '';
-  chatInput.style.height = 'auto';
 
-  addMessage(text, 'user');
+  if (!isRegen) addMessage(text, 'user');
   const typing = addMessage('', 'typing');
   chatStatus.textContent = '正在输入...';
 
@@ -214,6 +288,14 @@ async function sendMessage() {
   chatStatus.textContent = '在线';
   sending = false;
   chatSend.disabled = false;
+}
+
+async function sendMessage() {
+  const text = chatInput.value.trim();
+  if (!text || sending) return;
+  chatInput.value = '';
+  chatInput.style.height = 'auto';
+  await doSend(text, false);
 }
 
 chatSend.addEventListener('click', sendMessage);
