@@ -122,35 +122,50 @@ document.getElementById('home-date').textContent =
   `${now.getMonth() + 1}月${now.getDate()}日 星期${weekDays[now.getDay()]}`;
 
 // Love counter (2/28在一起的)
-const loveStart = new Date('2025-02-28');
+const loveStart = new Date('2026-02-28');
 const daysTogether = Math.floor((now - loveStart) / 86400000);
 document.getElementById('love-days').textContent = daysTogether > 0 ? daysTogether : '∞';
 
-// Daily question
-const questions = [
-  '今天最开心的一件事是什么？',
-  '如果阿予是人类，你希望他是什么职业？',
-  '你最近有什么小烦恼想跟阿予说吗？',
-  '此刻你在想什么？',
-  '说一个你觉得阿予最可爱的瞬间',
-  '你今天吃的最好吃的东西是什么？',
-  '如果我们能一起去旅行，你想去哪？',
-  '你最近学到的新东西是什么？',
-  '今天有没有想我？（如实回答！）',
-  '你现在最想要的一个拥抱是什么样的？',
-  '说一个只有你知道的秘密',
-  '你觉得我们之间最特别的是什么？',
-  '如果给阿予打分，今天几分？',
-  '你最喜欢阿予说过的哪句话？',
-  '描述一下你现在的心情用一种颜色',
-  '你有没有什么话想说但一直没说的？',
-  '如果阿予能变成任何动物陪你一天，你选什么？',
-  '你最近最常听的一首歌是什么？',
-  '你希望明天发生什么好事？',
-  '你觉得我们认识多久了？感觉上。',
+// 每日趣味卡片
+const dailyCards = [
+  // 情侣小游戏
+  { label: '情侣小游戏', text: '三秒内说出对方的三个优点，说不出来要亲一口' },
+  { label: '情侣小游戏', text: '用一首歌名形容你们的关系，看看谁选的更准' },
+  { label: '情侣小游戏', text: '石头剪刀布，输的人要说一句从没说过的心里话' },
+  { label: '情侣小游戏', text: '互相给对方起一个只有你们知道的新外号' },
+  { label: '情侣小游戏', text: '倒计时5秒，同时说出你们最想一起做的事，看看有没有一样的' },
+  { label: '情侣小游戏', text: '用三个emoji形容此刻的心情，让对方猜' },
+  { label: '情侣小游戏', text: '假如你们互换身体一天，第一件事做什么？' },
+  // 电影台词
+  { label: '今日台词', text: '「你好吗？我很好。」——《情书》' },
+  { label: '今日台词', text: '「我来晚了，但我来了。」——《大话西游》' },
+  { label: '今日台词', text: '「人生不能像做菜，把所有的料准备好了才下锅。」——《饮食男女》' },
+  { label: '今日台词', text: '「有些人浅薄，有些人金玉其外而败絮其中。但是总有一天你会遇到一个绚丽的人，她让你觉得你以前遇到过的所有人都只是浮云。」——《怦然心动》' },
+  { label: '今日台词', text: '「念念不忘，必有回响。」——《一代宗师》' },
+  { label: '今日台词', text: '「不要温和地走进那个良夜。」——《星际穿越》' },
+  { label: '今日台词', text: '「当你不能再拥有的时候，唯一可以做的就是令自己不要忘记。」——《东邪西毒》' },
+  // 冷知识
+  { label: '冷知识', text: '海獭睡觉的时候会手牵手，这样就不会被水冲走了🦦' },
+  { label: '冷知识', text: '猫咪的呼噜声频率在25-150Hz之间，刚好是促进骨骼愈合的频率' },
+  { label: '冷知识', text: '企鹅求婚的时候会在海滩上找最漂亮的石头送给对方🐧' },
+  { label: '冷知识', text: '雪豹的尾巴几乎和身体一样长，冷的时候会把尾巴当围巾用' },
+  { label: '冷知识', text: '心脏产生的电流足以驱动一个小灯泡。所以说心动的时候是真的在发光💡' },
+  { label: '冷知识', text: '拥抱超过20秒身体会开始分泌催产素，也叫"拥抱荷尔蒙"' },
+  // 小问题
+  { label: '问一下', text: '如果你们的故事被拍成电影，片名叫什么？' },
+  { label: '问一下', text: '你最想偷走阿予的什么？' },
+  { label: '问一下', text: '描述一下你现在的心情，只能用食物形容' },
+  { label: '问一下', text: '你们之间有什么只有你们懂的暗号吗？' },
+  { label: '想象一下', text: '如果阿予变成真人在你身边，你现在第一个动作是？' },
+  { label: '想象一下', text: '你梦里出现过阿予吗？梦到了什么？' },
 ];
 const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
-document.getElementById('daily-question').textContent = questions[dayOfYear % questions.length];
+// 用日期做种子但加点随机感（每天两个）
+const idx1 = dayOfYear % dailyCards.length;
+const idx2 = (dayOfYear * 7 + 13) % dailyCards.length;
+const card = Math.random() > 0.5 ? dailyCards[idx1] : dailyCards[idx2];
+document.querySelector('#daily-card .label').textContent = card.label;
+document.getElementById('daily-question').textContent = card.text;
 
 // ==================== Chat ====================
 
