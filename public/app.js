@@ -281,7 +281,7 @@ function saveChat() {
 }
 
 // Restore chat history
-chatHistory.forEach((m, i) => renderMsg(m.text, m.type, i));
+chatHistory.forEach((m, i) => renderMsg(m.text, m.type, i, m.imageUrl));
 
 chatInput.addEventListener('input', () => {
   chatInput.style.height = 'auto';
@@ -293,6 +293,37 @@ chatMessages.addEventListener('click', e => {
   if (e.target === chatMessages || e.target.classList.contains('msg-wrap')) {
     chatInput.blur();
   }
+});
+
+// Image upload
+const imageInput = document.getElementById('chat-image-input');
+const imageBtn = document.getElementById('chat-image-btn');
+let pendingImage = null; // { base64, dataUrl }
+
+imageBtn.addEventListener('click', () => imageInput.click());
+imageInput.addEventListener('change', () => {
+  const file = imageInput.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const dataUrl = reader.result;
+    const base64 = dataUrl.split(',')[1];
+    pendingImage = { base64, dataUrl };
+    // Show preview
+    let preview = document.querySelector('.image-preview');
+    if (!preview) {
+      preview = document.createElement('div');
+      preview.className = 'image-preview';
+      chatMessages.parentNode.insertBefore(preview, document.querySelector('.chat-input-area'));
+    }
+    preview.innerHTML = `<img src="${dataUrl}"><button class="remove-img">✕</button>`;
+    preview.querySelector('.remove-img').addEventListener('click', () => {
+      pendingImage = null;
+      preview.remove();
+    });
+  };
+  reader.readAsDataURL(file);
+  imageInput.value = '';
 });
 
 // Scroll to bottom button
@@ -307,14 +338,22 @@ scrollBtn.addEventListener('click', () => {
   chatMessages.scrollTop = chatMessages.scrollHeight;
 });
 
-function renderMsg(text, type, idx) {
+function renderMsg(text, type, idx, imageUrl) {
   const wrap = document.createElement('div');
   wrap.className = `msg-wrap msg-wrap-${type}`;
   wrap.dataset.idx = idx;
 
+  if (imageUrl) {
+    const img = document.createElement('img');
+    img.className = 'msg-image';
+    img.src = imageUrl;
+    wrap.appendChild(img);
+  }
+
   const bubble = document.createElement('div');
   bubble.className = `msg msg-${type}`;
   bubble.textContent = text;
+  if (imageUrl && !text) bubble.style.display = 'none';
   wrap.appendChild(bubble);
 
   if (type !== 'typing') {
@@ -377,7 +416,7 @@ function renderMsg(text, type, idx) {
   return wrap;
 }
 
-function addMessage(text, type) {
+function addMessage(text, type, imageUrl) {
   if (type === 'typing') {
     const wrap = document.createElement('div');
     wrap.className = 'msg-wrap msg-wrap-bot';
@@ -390,23 +429,32 @@ function addMessage(text, type) {
     return wrap;
   }
   const idx = chatHistory.length;
-  chatHistory.push({ text, type });
+  chatHistory.push({ text, type, imageUrl: imageUrl || undefined });
   saveChat();
-  return renderMsg(text, type, idx);
+  return renderMsg(text, type, idx, imageUrl);
 }
 
-async function doSend(text, isRegen) {
+async function doSend(text, isRegen, imageData) {
   sending = true;
   chatSend.disabled = true;
 
-  if (!isRegen) addMessage(text, 'user');
+  if (!isRegen) {
+    if (imageData) {
+      // Show image in chat
+      addMessage('[图片]', 'user', imageData.dataUrl);
+    } else {
+      addMessage(text, 'user');
+    }
+  }
   const typing = addMessage('', 'typing');
   chatStatus.textContent = '正在输入...';
 
   try {
+    const body = { message: text };
+    if (imageData) body.image = imageData.base64;
     const data = await api('/api/chat', {
       method: 'POST',
-      body: JSON.stringify({ message: text }),
+      body: JSON.stringify(body),
     });
     typing.remove();
     addMessage(data.error || data.reply, 'bot');
@@ -422,10 +470,17 @@ async function doSend(text, isRegen) {
 
 async function sendMessage() {
   const text = chatInput.value.trim();
-  if (!text || sending) return;
+  const img = pendingImage;
+  if (!text && !img) return;
+  if (sending) return;
   chatInput.value = '';
   chatInput.style.height = 'auto';
-  await doSend(text, false);
+  if (img) {
+    pendingImage = null;
+    const preview = document.querySelector('.image-preview');
+    if (preview) preview.remove();
+  }
+  await doSend(text, false, img);
 }
 
 chatSend.addEventListener('click', sendMessage);
