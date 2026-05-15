@@ -39,8 +39,8 @@ function switchPage(target) {
   tabs.forEach(t => t.classList.toggle('active', t.dataset.page === target));
   pages.forEach(p => p.classList.toggle('active', p.id === `page-${target}`));
   if (target === 'points') loadPoints();
-  if (target === 'journal') loadJournal();
-  if (target === 'memory') loadMemory();
+  if (target === 'tree') loadTreeSub();
+  if (target === 'fun') renderFun();
   if (target === 'chat') {
     chatMessages.scrollTop = chatMessages.scrollHeight;
     chatInput.focus();
@@ -77,7 +77,7 @@ let tapCount = 0;
 leopard.addEventListener('click', () => {
   tapCount++;
   leopard.classList.remove('tapped', 'rolling');
-  void leopard.offsetWidth; // reflow
+  void leopard.offsetWidth;
   if (tapCount % 3 === 0) {
     leopard.classList.add('rolling');
     leopardStatus.textContent = '在打滚！🌀';
@@ -86,7 +86,6 @@ leopard.addEventListener('click', () => {
     const reactions = ['喵！', '蹭蹭～', '尾巴摇了摇', '（看着你）', '嗷呜～'];
     leopardStatus.textContent = reactions[Math.floor(Math.random() * reactions.length)];
   }
-  // sparkle effect
   for (let i = 0; i < 5; i++) {
     const s = document.createElement('div');
     s.className = 'sparkle';
@@ -126,9 +125,9 @@ const loveStart = new Date('2026-02-28');
 const daysTogether = Math.floor((now - loveStart) / 86400000);
 document.getElementById('love-days').textContent = daysTogether > 0 ? daysTogether : '∞';
 
-// 每日趣味卡片
+// ==================== Fun Page ====================
+
 const dailyCards = [
-  // 情侣小游戏
   { label: '情侣小游戏', text: '三秒内说出对方的三个优点，说不出来要亲一口' },
   { label: '情侣小游戏', text: '用一首歌名形容你们的关系，看看谁选的更准' },
   { label: '情侣小游戏', text: '石头剪刀布，输的人要说一句从没说过的心里话' },
@@ -136,7 +135,6 @@ const dailyCards = [
   { label: '情侣小游戏', text: '倒计时5秒，同时说出你们最想一起做的事，看看有没有一样的' },
   { label: '情侣小游戏', text: '用三个emoji形容此刻的心情，让对方猜' },
   { label: '情侣小游戏', text: '假如你们互换身体一天，第一件事做什么？' },
-  // 电影台词
   { label: '今日台词', text: '「你好吗？我很好。」——《情书》' },
   { label: '今日台词', text: '「我来晚了，但我来了。」——《大话西游》' },
   { label: '今日台词', text: '「人生不能像做菜，把所有的料准备好了才下锅。」——《饮食男女》' },
@@ -144,14 +142,12 @@ const dailyCards = [
   { label: '今日台词', text: '「念念不忘，必有回响。」——《一代宗师》' },
   { label: '今日台词', text: '「不要温和地走进那个良夜。」——《星际穿越》' },
   { label: '今日台词', text: '「当你不能再拥有的时候，唯一可以做的就是令自己不要忘记。」——《东邪西毒》' },
-  // 冷知识
   { label: '冷知识', text: '海獭睡觉的时候会手牵手，这样就不会被水冲走了🦦' },
   { label: '冷知识', text: '猫咪的呼噜声频率在25-150Hz之间，刚好是促进骨骼愈合的频率' },
   { label: '冷知识', text: '企鹅求婚的时候会在海滩上找最漂亮的石头送给对方🐧' },
   { label: '冷知识', text: '雪豹的尾巴几乎和身体一样长，冷的时候会把尾巴当围巾用' },
   { label: '冷知识', text: '心脏产生的电流足以驱动一个小灯泡。所以说心动的时候是真的在发光💡' },
   { label: '冷知识', text: '拥抱超过20秒身体会开始分泌催产素，也叫"拥抱荷尔蒙"' },
-  // 小问题
   { label: '问一下', text: '如果你们的故事被拍成电影，片名叫什么？' },
   { label: '问一下', text: '你最想偷走阿予的什么？' },
   { label: '问一下', text: '描述一下你现在的心情，只能用食物形容' },
@@ -159,13 +155,116 @@ const dailyCards = [
   { label: '想象一下', text: '如果阿予变成真人在你身边，你现在第一个动作是？' },
   { label: '想象一下', text: '你梦里出现过阿予吗？梦到了什么？' },
 ];
-const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
-// 用日期做种子但加点随机感（每天两个）
-const idx1 = dayOfYear % dailyCards.length;
-const idx2 = (dayOfYear * 7 + 13) % dailyCards.length;
-const card = Math.random() > 0.5 ? dailyCards[idx1] : dailyCards[idx2];
-document.querySelector('#daily-card .label').textContent = card.label;
-document.getElementById('daily-question').textContent = card.text;
+
+let funRendered = false;
+function renderFun() {
+  const el = document.getElementById('fun-content');
+  // Pick 4 random cards each time
+  const shuffled = [...dailyCards].sort(() => Math.random() - 0.5);
+  const picks = shuffled.slice(0, 4);
+
+  el.innerHTML = '';
+
+  // Section: today's picks
+  const title = document.createElement('div');
+  title.className = 'fun-section-title';
+  title.textContent = '今日推荐';
+  el.appendChild(title);
+
+  picks.forEach(card => {
+    const div = document.createElement('div');
+    div.className = 'fun-card';
+    div.innerHTML = `<div class="fun-label">${escapeHtml(card.label)}</div><div class="fun-text">${escapeHtml(card.text)}</div>`;
+    div.addEventListener('click', () => {
+      // Copy or share
+      navigator.clipboard.writeText(card.text).then(() => {
+        div.style.borderLeftColor = 'var(--mint-deep)';
+        setTimeout(() => div.style.borderLeftColor = '', 800);
+      });
+    });
+    el.appendChild(div);
+  });
+
+  // Refresh button
+  const refreshBtn = document.createElement('button');
+  refreshBtn.className = 'fun-refresh';
+  refreshBtn.textContent = '换一批 ↻';
+  refreshBtn.addEventListener('click', renderFun);
+  el.appendChild(refreshBtn);
+
+  // All categories section
+  const allTitle = document.createElement('div');
+  allTitle.className = 'fun-section-title';
+  allTitle.textContent = '全部内容';
+  el.appendChild(allTitle);
+
+  const categories = {};
+  dailyCards.forEach(c => {
+    if (!categories[c.label]) categories[c.label] = [];
+    categories[c.label].push(c);
+  });
+
+  Object.entries(categories).forEach(([label, cards]) => {
+    const catBtn = document.createElement('div');
+    catBtn.className = 'fun-card';
+    catBtn.innerHTML = `<div class="fun-label">${escapeHtml(label)}</div><div class="fun-text">${cards.length} 条</div>`;
+    catBtn.addEventListener('click', () => {
+      // Expand: show all cards in this category
+      showCategoryCards(label, cards);
+    });
+    el.appendChild(catBtn);
+  });
+}
+
+function showCategoryCards(label, cards) {
+  const el = document.getElementById('fun-content');
+  el.innerHTML = '';
+
+  const backBtn = document.createElement('button');
+  backBtn.className = 'fun-refresh';
+  backBtn.textContent = '← 返回';
+  backBtn.addEventListener('click', renderFun);
+  el.appendChild(backBtn);
+
+  const title = document.createElement('div');
+  title.className = 'fun-section-title';
+  title.textContent = label;
+  el.appendChild(title);
+
+  cards.forEach(card => {
+    const div = document.createElement('div');
+    div.className = 'fun-card';
+    div.innerHTML = `<div class="fun-text">${escapeHtml(card.text)}</div>`;
+    div.addEventListener('click', () => {
+      navigator.clipboard.writeText(card.text).then(() => {
+        div.style.borderLeftColor = 'var(--mint-deep)';
+        setTimeout(() => div.style.borderLeftColor = '', 800);
+      });
+    });
+    el.appendChild(div);
+  });
+}
+
+// ==================== Tree-hole Sub-tabs ====================
+
+const treeTabs = document.querySelectorAll('.tree-tab');
+const treeSubs = document.querySelectorAll('.tree-sub');
+
+treeTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const sub = tab.dataset.sub;
+    treeTabs.forEach(t => t.classList.toggle('active', t.dataset.sub === sub));
+    treeSubs.forEach(s => s.classList.toggle('active', s.id === `sub-${sub}`));
+    if (sub === 'journal') loadJournal();
+    if (sub === 'memory') loadMemory();
+  });
+});
+
+function loadTreeSub() {
+  const activeSub = document.querySelector('.tree-tab.active');
+  if (activeSub && activeSub.dataset.sub === 'memory') loadMemory();
+  else loadJournal();
+}
 
 // ==================== Chat ====================
 
@@ -181,7 +280,7 @@ function saveChat() {
   localStorage.setItem('ayu_chat', JSON.stringify(chatHistory));
 }
 
-// 恢复历史消息
+// Restore chat history
 chatHistory.forEach((m, i) => renderMsg(m.text, m.type, i));
 
 chatInput.addEventListener('input', () => {
@@ -189,14 +288,14 @@ chatInput.addEventListener('input', () => {
   chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
 });
 
-// 点空白区域收起键盘
+// Tap blank area to dismiss keyboard
 chatMessages.addEventListener('click', e => {
   if (e.target === chatMessages || e.target.classList.contains('msg-wrap')) {
     chatInput.blur();
   }
 });
 
-// 一键回到最新消息
+// Scroll to bottom button
 const scrollBtn = document.getElementById('scroll-bottom');
 function checkScrollBtn() {
   const el = chatMessages;
@@ -218,12 +317,10 @@ function renderMsg(text, type, idx) {
   bubble.textContent = text;
   wrap.appendChild(bubble);
 
-  // 操作按钮
   if (type !== 'typing') {
     const actions = document.createElement('div');
     actions.className = 'msg-actions';
 
-    // 复制（双方都有）
     const copyBtn = document.createElement('button');
     copyBtn.textContent = '📋';
     copyBtn.title = '复制';
@@ -236,7 +333,6 @@ function renderMsg(text, type, idx) {
     actions.appendChild(copyBtn);
 
     if (type === 'user') {
-      // 编辑（只有自己的消息）
       const editBtn = document.createElement('button');
       editBtn.textContent = '✎';
       editBtn.title = '编辑';
@@ -245,11 +341,9 @@ function renderMsg(text, type, idx) {
         chatInput.focus();
         chatInput.style.height = 'auto';
         chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
-        // 删掉这条和之后的所有消息
         const startIdx = parseInt(wrap.dataset.idx);
         chatHistory = chatHistory.slice(0, startIdx);
         saveChat();
-        // 从DOM移除这条及之后的
         const allWraps = chatMessages.querySelectorAll('.msg-wrap');
         allWraps.forEach(w => {
           if (parseInt(w.dataset.idx) >= startIdx) w.remove();
@@ -259,21 +353,17 @@ function renderMsg(text, type, idx) {
     }
 
     if (type === 'bot') {
-      // 重新生成（只有阿予的消息）
       const regenBtn = document.createElement('button');
       regenBtn.textContent = '↻';
       regenBtn.title = '重新生成';
       regenBtn.addEventListener('click', async () => {
         if (sending) return;
-        // 找到这条回复对应的用户消息
         const botIdx = parseInt(wrap.dataset.idx);
         const userMsg = chatHistory[botIdx - 1];
         if (!userMsg || userMsg.type !== 'user') return;
-        // 删掉这条bot回复
         chatHistory = chatHistory.slice(0, botIdx);
         saveChat();
         wrap.remove();
-        // 重新发
         await doSend(userMsg.text, true);
       });
       actions.appendChild(regenBtn);
@@ -346,6 +436,60 @@ chatInput.addEventListener('keydown', e => {
   }
 });
 
+// ==================== Chat Settings ====================
+
+const chatSettingsBtn = document.getElementById('chat-settings-btn');
+const chatSettingsModal = document.getElementById('chat-settings');
+const setName = document.getElementById('set-name');
+const setAvatar = document.getElementById('set-avatar');
+const setCancel = document.getElementById('set-cancel');
+const setSave = document.getElementById('set-save');
+const bgOptions = document.querySelectorAll('.bg-opt');
+
+let chatConfig = JSON.parse(localStorage.getItem('ayu_chat_config') || '{}');
+
+function applyChatConfig() {
+  const name = chatConfig.name || '阿予';
+  const avatar = chatConfig.avatar || '/apple-touch-icon.png';
+  const bg = chatConfig.bg || '';
+
+  document.getElementById('chat-name').textContent = name;
+  const avatarEl = document.getElementById('chat-avatar');
+  if (avatarEl) avatarEl.src = avatar;
+  if (bg) chatMessages.style.background = bg;
+}
+applyChatConfig();
+
+chatSettingsBtn.addEventListener('click', () => {
+  setName.value = chatConfig.name || '';
+  setAvatar.value = chatConfig.avatar || '';
+  // Highlight current bg
+  bgOptions.forEach(opt => opt.classList.toggle('selected', opt.dataset.bg === chatConfig.bg));
+  chatSettingsModal.style.display = '';
+});
+
+let selectedBg = chatConfig.bg || '';
+bgOptions.forEach(opt => {
+  opt.addEventListener('click', () => {
+    selectedBg = opt.dataset.bg;
+    bgOptions.forEach(o => o.classList.toggle('selected', o === opt));
+  });
+});
+
+setCancel.addEventListener('click', () => { chatSettingsModal.style.display = 'none'; });
+chatSettingsModal.addEventListener('click', e => {
+  if (e.target === chatSettingsModal) chatSettingsModal.style.display = 'none';
+});
+
+setSave.addEventListener('click', () => {
+  if (setName.value.trim()) chatConfig.name = setName.value.trim();
+  if (setAvatar.value.trim()) chatConfig.avatar = setAvatar.value.trim();
+  if (selectedBg) chatConfig.bg = selectedBg;
+  localStorage.setItem('ayu_chat_config', JSON.stringify(chatConfig));
+  applyChatConfig();
+  chatSettingsModal.style.display = 'none';
+});
+
 // ==================== Points ====================
 
 async function loadPoints() {
@@ -355,13 +499,18 @@ async function loadPoints() {
     const data = await api('/api/points');
     el.textContent = data.points;
     const entries = data.log || [];
-    // Keep header, rebuild entries
     logEl.innerHTML = '<div class="points-log-header">使用记录</div>';
     if (!entries.length) {
       logEl.innerHTML += '<div class="empty-state"><div class="emoji">📋</div>还没有记录哦</div>';
       return;
     }
-    [...entries].reverse().forEach(entry => {
+    // Calculate running balance
+    let balance = 0;
+    const withBalance = entries.map(entry => {
+      balance += entry.delta;
+      return { ...entry, balance };
+    });
+    [...withBalance].reverse().forEach(entry => {
       const div = document.createElement('div');
       div.className = 'log-entry';
       const sign = entry.delta >= 0 ? '+' : '';
@@ -369,6 +518,7 @@ async function loadPoints() {
       div.innerHTML = `
         <div class="delta ${cls}">${sign}${entry.delta}</div>
         <div class="reason">${escapeHtml(entry.reason)}</div>
+        <div class="balance">余${entry.balance}分</div>
         <div class="time">${entry.time || ''}</div>
       `;
       logEl.appendChild(div);

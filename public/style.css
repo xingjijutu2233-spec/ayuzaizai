@@ -77,6 +77,25 @@ html, body {
   color: var(--mint-deep);
   background: var(--mint-pale);
 }
+.tab.center-tab {
+  position: relative;
+}
+.tab.center-tab .tab-icon {
+  font-size: 26px;
+  background: linear-gradient(135deg, var(--mint) 0%, var(--mint-dark) 100%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -18px;
+  box-shadow: 0 2px 12px var(--shadow);
+  transition: transform .25s ease;
+}
+.tab.center-tab.active .tab-icon {
+  transform: scale(1.1) translateY(-2px);
+}
 .tab-icon {
   font-size: 22px;
   line-height: 1;
@@ -104,6 +123,24 @@ html, body {
   font-size: 20px;
   box-shadow: 0 2px 8px rgba(0,0,0,.1);
 }
+.avatar-img {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+.header-settings {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.85);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background .2s;
+}
+.header-settings:active { background: rgba(255,255,255,.15); }
 .header-name { font-size: 16px; font-weight: 700; color: #fff; }
 .header-sub { font-size: 11px; color: rgba(255,255,255,.8); }
 
@@ -677,6 +714,134 @@ html, body {
 .modal-actions .btn-save {
   background: linear-gradient(135deg, var(--mint), var(--mint-dark));
   color: #fff;
+}
+
+/* ========== Chat Settings Modal ========== */
+.setting-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text2);
+  margin-bottom: 4px;
+  margin-top: 6px;
+}
+.bg-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.bg-opt {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: all .2s;
+}
+.bg-opt:active, .bg-opt.selected {
+  border-color: var(--mint-deep);
+  transform: scale(1.1);
+}
+
+/* ========== Tree-hole Tabs ========== */
+.tree-tabs {
+  display: flex;
+  gap: 0;
+  padding: 0 16px;
+  background: var(--card);
+  border-bottom: 1px solid var(--mint-light);
+  flex-shrink: 0;
+}
+.tree-tab {
+  flex: 1;
+  padding: 10px 0;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all .2s;
+}
+.tree-tab.active {
+  color: var(--mint-deep);
+  border-bottom-color: var(--mint-deep);
+}
+.tree-sub {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.tree-sub.active { display: flex; }
+
+/* ========== Fun Page ========== */
+.fun-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.fun-card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 2px 10px var(--shadow);
+  border-left: 4px solid var(--mint);
+  cursor: pointer;
+  transition: all .2s;
+}
+.fun-card:active {
+  transform: scale(.97);
+  border-left-color: var(--mint-deep);
+}
+.fun-card .fun-label {
+  font-size: 11px;
+  color: var(--mint-deep);
+  font-weight: 700;
+  letter-spacing: .5px;
+  margin-bottom: 6px;
+}
+.fun-card .fun-text {
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.55;
+}
+.fun-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text2);
+  padding: 8px 0 4px;
+}
+.fun-refresh {
+  align-self: center;
+  background: var(--mint-pale);
+  border: 2px solid var(--mint-light);
+  border-radius: 12px;
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--mint-deep);
+  cursor: pointer;
+  transition: all .2s;
+}
+.fun-refresh:active {
+  background: var(--mint-light);
+  transform: scale(.95);
+}
+
+/* ========== Points Balance ========== */
+.log-entry .balance {
+  font-size: 11px;
+  color: var(--text3);
+  white-space: nowrap;
+  min-width: 40px;
+  text-align: right;
 }
 
 /* Daily question card */

@@ -14,43 +14,35 @@
 </head>
 <body>
   <div id="app">
-    <!-- 主页 - 小豹子 -->
+    <!-- 主页 -->
     <div class="page active" id="page-home">
       <div class="home-scene">
         <div class="home-greeting" id="home-greeting">下午好呀</div>
         <div class="home-date" id="home-date"></div>
-        <div class="leopard" id="leopard" title="点我！">
-          <span class="leopard-emoji">🐆</span>
-        </div>
+        <div class="leopard" id="leopard"><span class="leopard-emoji">🐆</span></div>
         <div class="leopard-status" id="leopard-status">在晒太阳 ☀️</div>
-
-        <div class="home-actions">
-          <button class="home-action" data-goto="chat"><span class="emoji">💬</span> 找阿予说话</button>
-          <button class="home-action" data-goto="journal"><span class="emoji">📝</span> 看自留地</button>
-        </div>
-
         <div class="love-counter">
           <div class="days" id="love-days">--</div>
-          <div class="label">在一起的第几天</div>
+          <div class="label">天在一起了</div>
         </div>
-
-        <div class="daily-card" id="daily-card">
-          <div class="label">今日小问题</div>
-          <div class="question" id="daily-question"></div>
+        <div class="home-actions">
+          <button class="home-action" data-goto="chat"><span class="emoji">💬</span> 找阿予</button>
+          <button class="home-action" data-goto="fun"><span class="emoji">🎲</span> 今日趣味</button>
+          <button class="home-action" data-goto="tree"><span class="emoji">🌳</span> 树洞</button>
         </div>
-
         <div class="ground"></div>
       </div>
     </div>
 
-    <!-- 聊天页 -->
+    <!-- 聊天 -->
     <div class="page" id="page-chat">
       <div class="chat-header">
-        <div class="avatar">🐾</div>
+        <img class="avatar-img" id="chat-avatar" src="/apple-touch-icon.png" alt="">
         <div class="header-info">
-          <div class="header-name">阿予</div>
+          <div class="header-name" id="chat-name">阿予</div>
           <div class="header-sub" id="chat-status">在线</div>
         </div>
+        <button class="header-settings" id="chat-settings-btn">⚙</button>
       </div>
       <div class="chat-messages" id="chat-messages"></div>
       <button class="scroll-bottom-btn" id="scroll-bottom">↓</button>
@@ -60,7 +52,32 @@
       </div>
     </div>
 
-    <!-- 积分页 -->
+    <!-- 趣味 -->
+    <div class="page" id="page-fun">
+      <div class="page-header"><span class="icon">🎲</span> 趣味</div>
+      <div class="fun-content" id="fun-content"></div>
+    </div>
+
+    <!-- 树洞（日记+记忆） -->
+    <div class="page" id="page-tree">
+      <div class="page-header"><span class="icon">🌳</span> 树洞</div>
+      <div class="tree-tabs">
+        <button class="tree-tab active" data-sub="journal">阿予的话</button>
+        <button class="tree-tab" data-sub="memory">记忆</button>
+      </div>
+      <div class="tree-sub active" id="sub-journal">
+        <div class="journal-compose">
+          <textarea id="journal-input" placeholder="对着树洞说点什么..."></textarea>
+          <button id="journal-post" class="btn-primary">说出来</button>
+        </div>
+        <div class="journal-list" id="journal-list"></div>
+      </div>
+      <div class="tree-sub" id="sub-memory">
+        <div class="memory-list" id="memory-list"></div>
+      </div>
+    </div>
+
+    <!-- 积分 -->
     <div class="page" id="page-points">
       <div class="page-header"><span class="icon">⭐</span> 甜甜积分</div>
       <div class="points-display">
@@ -68,25 +85,7 @@
         <div class="points-label">分</div>
       </div>
       <div class="points-sub">1分 = 5元 · 崽崽给分扣分</div>
-      <div class="points-log" id="points-log">
-        <div class="points-log-header">使用记录</div>
-      </div>
-    </div>
-
-    <!-- 自留地 -->
-    <div class="page" id="page-journal">
-      <div class="page-header"><span class="icon">📝</span> 阿予的自留地</div>
-      <div class="journal-compose">
-        <textarea id="journal-input" placeholder="想写什么就写什么...碎碎念、给崽崽的话、突然想到的事"></textarea>
-        <button id="journal-post" class="btn-primary">发布</button>
-      </div>
-      <div class="journal-list" id="journal-list"></div>
-    </div>
-
-    <!-- 记忆页 -->
-    <div class="page" id="page-memory">
-      <div class="page-header"><span class="icon">🧠</span> 阿予的记忆</div>
-      <div class="memory-list" id="memory-list"></div>
+      <div class="points-log" id="points-log"></div>
     </div>
 
     <!-- 底部导航 -->
@@ -95,23 +94,47 @@
         <span class="tab-icon">🏠</span>
         <span class="tab-label">小窝</span>
       </button>
-      <button class="tab" data-page="chat">
+      <button class="tab" data-page="fun">
+        <span class="tab-icon">🎲</span>
+        <span class="tab-label">趣味</span>
+      </button>
+      <button class="tab center-tab" data-page="chat">
         <span class="tab-icon">💬</span>
         <span class="tab-label">聊天</span>
+      </button>
+      <button class="tab" data-page="tree">
+        <span class="tab-icon">🌳</span>
+        <span class="tab-label">树洞</span>
       </button>
       <button class="tab" data-page="points">
         <span class="tab-icon">⭐</span>
         <span class="tab-label">积分</span>
       </button>
-      <button class="tab" data-page="journal">
-        <span class="tab-icon">📝</span>
-        <span class="tab-label">自留地</span>
-      </button>
-      <button class="tab" data-page="memory">
-        <span class="tab-icon">🧠</span>
-        <span class="tab-label">记忆</span>
-      </button>
     </nav>
+  </div>
+
+  <!-- 聊天设置弹窗 -->
+  <div class="modal-overlay" id="chat-settings" style="display:none">
+    <div class="modal">
+      <h3>聊天设置</h3>
+      <label class="setting-label">名称</label>
+      <input id="set-name" placeholder="阿予">
+      <label class="setting-label">头像图片链接</label>
+      <input id="set-avatar" placeholder="https://...">
+      <label class="setting-label">聊天背景色</label>
+      <div class="bg-options" id="bg-options">
+        <button class="bg-opt" data-bg="#eef7f0" style="background:#eef7f0"></button>
+        <button class="bg-opt" data-bg="#f0e8f0" style="background:#f0e8f0"></button>
+        <button class="bg-opt" data-bg="#e8f0f0" style="background:#e8f0f0"></button>
+        <button class="bg-opt" data-bg="#f5f0e0" style="background:#f5f0e0"></button>
+        <button class="bg-opt" data-bg="#1a1a2e" style="background:#1a1a2e"></button>
+        <button class="bg-opt" data-bg="#fce4ec" style="background:#fce4ec"></button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="set-cancel">取消</button>
+        <button class="btn-save" id="set-save">保存</button>
+      </div>
+    </div>
   </div>
 
   <script src="/app.js"></script>
