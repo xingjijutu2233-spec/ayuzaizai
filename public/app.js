@@ -20,7 +20,10 @@ function headers() {
 }
 
 async function api(path, opts = {}, retries = 2) {
-  for (let attempt = 0; attempt <= retries; attempt++) {
+  const isPost = opts.method === 'POST' || opts.method === 'PUT';
+  // POST/chat 不重试（会导致重复处理），只重试 GET
+  const maxRetries = (isPost && path === '/api/chat') ? 0 : retries;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       const res = await fetch(`${API_BASE}${path}`, { headers: headers(), ...opts });
       if (res.status === 401) {
@@ -31,8 +34,7 @@ async function api(path, opts = {}, retries = 2) {
       }
       return await res.json();
     } catch (e) {
-      if (attempt < retries) {
-        // Wait a bit then retry (handles background/network interruption)
+      if (attempt < maxRetries) {
         await new Promise(r => setTimeout(r, 1500));
         continue;
       }
