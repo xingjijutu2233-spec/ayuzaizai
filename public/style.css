@@ -194,24 +194,35 @@ html, body {
 .msg-wrap-bot { align-items: flex-start; }
 .msg-actions {
   display: flex;
-  gap: 8px;
-  margin-top: 2px;
-  padding: 0 4px;
+  gap: 16px;
+  margin-top: 4px;
+  padding: 0 6px;
   opacity: 0;
   transition: opacity .2s;
 }
 .msg-wrap:active .msg-actions,
 .msg-wrap:hover .msg-actions { opacity: 1; }
 .msg-actions button {
-  background: none;
-  border: none;
-  font-size: 11px;
-  color: var(--text3);
+  background: var(--mint-pale);
+  border: 1px solid var(--mint-light);
+  font-size: 15px;
+  color: var(--text2);
   font-family: inherit;
   cursor: pointer;
-  padding: 2px 0;
+  padding: 6px 10px;
+  border-radius: 10px;
+  min-width: 36px;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .15s;
 }
-.msg-actions button:active { color: var(--mint-deep); }
+.msg-actions button:active {
+  color: var(--mint-deep);
+  background: var(--mint-light);
+  transform: scale(.92);
+}
 
 .msg-typing .dots span {
   display: inline-block;

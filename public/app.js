@@ -19,15 +19,31 @@ function headers() {
   return { 'Authorization': `Bearer ${API_TOKEN}`, 'Content-Type': 'application/json' };
 }
 
-async function api(path, opts = {}) {
-  const res = await fetch(`${API_BASE}${path}`, { headers: headers(), ...opts });
-  if (res.status === 401) {
-    localStorage.removeItem('ayu_token');
-    alert('密码不对哦，重新输入~');
-    location.reload();
-    return;
+async function api(path, opts = {}, retries = 2) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(`${API_BASE}${path}`, { headers: headers(), ...opts });
+      if (res.status === 401) {
+        localStorage.removeItem('ayu_token');
+        alert('密码不对哦，重新输入~');
+        location.reload();
+        return;
+      }
+      return await res.json();
+    } catch (e) {
+      if (attempt < retries) {
+        // Wait a bit then retry (handles background/network interruption)
+        await new Promise(r => setTimeout(r, 1500));
+        continue;
+      }
+      throw e;
+    }
   }
-  return res.json();
+}
+
+// Request notification permission on first use
+if ('Notification' in window && Notification.permission === 'default') {
+  Notification.requestPermission();
 }
 
 // ==================== Tabs ====================
@@ -434,14 +450,40 @@ function addMessage(text, type, imageUrl) {
   return renderMsg(text, type, idx, imageUrl);
 }
 
+// Compress image to max 800px and JPEG quality 0.7
+function compressImage(dataUrl) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const max = 800;
+      let w = img.width, h = img.height;
+      if (w > max || h > max) {
+        if (w > h) { h = Math.round(h * max / w); w = max; }
+        else { w = Math.round(w * max / h); h = max; }
+      }
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const compressed = canvas.toDataURL('image/jpeg', 0.7);
+      resolve({ dataUrl: compressed, base64: compressed.split(',')[1] });
+    };
+    img.src = dataUrl;
+  });
+}
+
 async function doSend(text, isRegen, imageData) {
   sending = true;
   chatSend.disabled = true;
 
+  // Compress image if present
+  if (imageData) {
+    imageData = await compressImage(imageData.dataUrl);
+  }
+
   if (!isRegen) {
     if (imageData) {
-      // Show image in chat
-      addMessage('[图片]', 'user', imageData.dataUrl);
+      addMessage(text || '[图片]', 'user', imageData.dataUrl);
     } else {
       addMessage(text, 'user');
     }
@@ -455,9 +497,14 @@ async function doSend(text, isRegen, imageData) {
     const data = await api('/api/chat', {
       method: 'POST',
       body: JSON.stringify(body),
-    });
+    }, 3); // 3 retries for chat
     typing.remove();
-    addMessage(data.error || data.reply, 'bot');
+    const reply = data.error || data.reply;
+    addMessage(reply, 'bot');
+    // Notify if app is in background
+    if (document.hidden && 'Notification' in window && Notification.permission === 'granted') {
+      new Notification('阿予', { body: reply.slice(0, 100), icon: '/apple-touch-icon.png' });
+    }
   } catch {
     typing.remove();
     addMessage('网络断了...等等再试', 'bot');
